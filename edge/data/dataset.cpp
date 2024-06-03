@@ -2,7 +2,7 @@
 #include <ctime>
 #include "dataset.h"
 
-DataSet::DataSet(time_t timestamp) 
+DataSet::DataSet(time_t timestamp)
 {
   this->timestamp = timestamp;
   this->num = 0;
@@ -38,7 +38,7 @@ HouseData *DataSet::getHouseData(int index)
 
   if (index < this->num)
   {
-    for (int i=0; i<index; i++)
+    for (int i = 0; i < index; i++)
       ret = ret->getNext();
   }
   else
@@ -81,7 +81,7 @@ HumidityData *DataSet::getHumidityData()
   return this->humid;
 }
 
-time_t DataSet::getTimestamp()
+time_t DataSet::getTime()
 {
   return this->timestamp;
 }

@@ -7,30 +7,31 @@
 
 class DataSet
 {
-  private:
-    time_t timestamp;
-    int num;
-    TemperatureData *temp;
-    HumidityData *humid;
-    HouseData *head;
-    HouseData *tail;
-    int iterator;
-  public:
-    DataSet(time_t timestamp);
+private:
+  time_t timestamp;
+  int num;
+  TemperatureData *temp;
+  HumidityData *humid;
+  HouseData *head;
+  HouseData *tail;
+  int iterator;
 
-    int getNumHouseData();
-    void addHouseData(HouseData *data);
-    HouseData *getHouseData(int index);
-    void setIterator();
-    HouseData *getNextHouseData();
+public:
+  DataSet(time_t timestamp);
 
-    void setTemperatureData(TemperatureData *temp);
-    TemperatureData *getTemperatureData();
+  int getNumHouseData();
+  void addHouseData(HouseData *data);
+  HouseData *getHouseData(int index);
+  void setIterator();
+  HouseData *getNextHouseData();
 
-    void setHumidityData(HumidityData *humid);
-    HumidityData *getHumidityData();
+  void setTemperatureData(TemperatureData *temp);
+  TemperatureData *getTemperatureData();
 
-    time_t getTimestamp();
+  void setHumidityData(HumidityData *humid);
+  HumidityData *getHumidityData();
+
+  time_t getTime();
 };
 
 #endif /* __DATASET_H__ */

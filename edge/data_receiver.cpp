@@ -12,7 +12,7 @@ using namespace std;
 DataReceiver::DataReceiver()
 {
   this->num = 0;
-  for (int i=0; i<NUM_OF_CUSTOMER; i++)
+  for (int i = 0; i < NUM_OF_CUSTOMER; i++)
     this->info[i] = NULL;
 }
 
@@ -25,7 +25,7 @@ void DataReceiver::init()
 {
   double mean, stdev;
 
-  for (int i=0; i<NUM_OF_CUSTOMER; i++)
+  for (int i = 0; i < NUM_OF_CUSTOMER; i++)
     this->info[i] = new Info(i);
 }
 
@@ -44,17 +44,18 @@ DataSet *DataReceiver::getDataSet(time_t timestamp)
   ret = new DataSet(timestamp);
   tm = localtime(&timestamp);
   snprintf(buf, 11, "%04d-%02d-%02d", tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday);
+  cout << "buf: " << buf << endl;
 
-  for (midx=0; midx<24; midx++)
+  for (midx = 0; midx < 24; midx++)
   {
     if (!strncmp(buf, month[midx], 7))
       break;
   }
 
   mean = power_avg[midx];
-  stdev = (int) (mean * 0.2);
+  stdev = (int)(mean * 0.2);
 
-  for (didx=0; didx<730; didx++)
+  for (didx = 0; didx < 730; didx++)
   {
     if (!strncmp(buf, date[didx], 10))
       break;
@@ -71,10 +72,10 @@ DataSet *DataReceiver::getDataSet(time_t timestamp)
   mt19937 gen(rd());
   normal_distribution<float> dist(mean, stdev);
 
-  for (int i=0; i<NUM_OF_CUSTOMER; i++)
+  for (int i = 0; i < NUM_OF_CUSTOMER; i++)
   {
     data = new HouseData(this->info[i]);
-    value = (int) dist(gen);
+    value = (int)dist(gen);
     power = new PowerData(timestamp, value);
     data->setPowerData(power);
     ret->addHouseData(data);

@@ -2,29 +2,31 @@
 #define __NETWORK_MANAGER_H__
 
 #include <cstdint>
+#include <ctime>
 #include "setting.h"
 
-class NetworkManager {
-  private:
-    int sock;
-    const char *addr;
-    int port;
-    uint8_t wbuf[BUFLEN];
-    uint8_t rbuf[BUFLEN];
+class NetworkManager
+{
+private:
+  int sock;
+  const char *addr;
+  int port;
+  uint8_t wbuf[BUFLEN];
+  uint8_t rbuf[BUFLEN];
 
-  public:
-    NetworkManager();
-    NetworkManager(const char *addr, int port);
+public:
+  NetworkManager();
+  NetworkManager(const char *addr, int port);
 
-    void setAddress(const char *addr);
-    const char *getAddress();
+  void setAddress(const char *addr);
+  const char *getAddress();
 
-    void setPort(int port);
-    int getPort();
+  void setPort(int port);
+  int getPort();
 
-    int init();
-    int sendData(uint8_t *data, int dlen);
-    uint8_t receiveCommand();
+  int init();
+  int sendData(uint8_t *data, int dlen, int byteOfData, int mode, time_t endtime, time_t curr);
+  uint8_t receiveCommand();
 };
 
 #endif /* __NETWORK_MANAGER_H__ */

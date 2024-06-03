@@ -6,26 +6,29 @@
 #include "network_manager.h"
 #include "process_manager.h"
 
-class Edge {
-  private:
-    DataReceiver *dr;
-    NetworkManager *nm;
-    ProcessManager *pm;
+class Edge
+{
+private:
+  DataReceiver *dr;
+  NetworkManager *nm;
+  ProcessManager *pm;
+  int mode;
+  time_t timestart, endtime;
 
-  public:
-    Edge();
-    Edge(const char *addr, int port);
+public:
+  Edge();
+  Edge(const char *addr, int port, int mode, time_t timestart, time_t endtime);
 
-    ~Edge();
+  ~Edge();
 
-    void setAddress(const char *addr);
-    const char *getAddress();
+  void setAddress(const char *addr);
+  const char *getAddress();
 
-    void setPort(int port);
-    int getPort();
+  void setPort(int port);
+  int getPort();
 
-    void init();
-    void run();
+  void init();
+  void run();
 };
 
 #endif /* __EDGE_H__ */

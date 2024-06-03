@@ -1,33 +1,10 @@
 #include "humidity_data.h"
 
 HumidityData::HumidityData(time_t timestamp, double min, double max, double avg)
+    : BaseData(timestamp, avg, "%")
 {
-  this->timestamp = timestamp;
-  this->avg = avg;
   this->min = min;
   this->max = max;
-  this->next = NULL;
-  this->unit = "\%";
-}
-
-void HumidityData::setNext(HumidityData *next)
-{
-  this->next = next;
-}
-
-HumidityData *HumidityData::getNext()
-{
-  return this->next;
-}
-
-void HumidityData::setValue(double value)
-{
-  this->avg = value;
-}
-
-double HumidityData::getValue()
-{
-  return this->avg;
 }
 
 void HumidityData::setMin(double min)
@@ -50,17 +27,7 @@ double HumidityData::getMax()
   return this->max;
 }
 
-void HumidityData::setTimestamp(time_t timestamp)
+double HumidityData::getAvg()
 {
-  this->timestamp = timestamp;
-}
-
-time_t HumidityData::getTimestamp()
-{
-  return this->timestamp;
-}
-
-string HumidityData::getUnit()
-{
-  return this->unit;
+  return this->avg;
 }

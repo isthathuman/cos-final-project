@@ -1,4 +1,8 @@
-import os, sys, logging, argparse, math
+import os
+import sys
+import logging
+import argparse
+import math
 from flask import Flask, json, jsonify, abort, make_response, request
 from flask_restful import Api, Resource, reqparse
 from modules.data_manager import DataManager
@@ -6,6 +10,7 @@ from modules.model_manager import ModelManager
 from putils.autils import init_algorithms
 
 THRESHOLD = 0.25
+
 
 class AIModule:
     def __init__(self):
@@ -32,7 +37,7 @@ class AIModule:
             self.results[name].add_data(-1)
             ret = self.models[name]
         else:
-            print ("\n\nThere is an error!!!\n\n")
+            print("\n\nThere is an error!!!\n\n")
 
         return ret
 
@@ -85,13 +90,15 @@ class AIModule:
             if name in self.training:
                 ret["num"] = len(self.training[name])
             else:
-                ret["num"] = "the training dataset for {} is not generated".format(name)
+                ret["num"] = "the training dataset for {} is not generated".format(
+                    name)
                 ret["opcode"] = "failure"
         elif dtype == "testing":
             if name in self.testing:
                 ret["num"] = len(self.testing[name])
             else:
-                ret["num"] = "the testing dataset for {} is not generated".format(name)
+                ret["num"] = "the testing dataset for {} is not generated".format(
+                    name)
                 ret["opcode"] = "failure"
         else:
             ret["opcode"] = "failure"
@@ -123,9 +130,10 @@ class AIModule:
         return ret
 
     def add_training_data(self, name, value):
-        logging.debug("before: {}".format(self.training[name].get_data()))
+        logging.debug("before train: {}".format(
+            self.training[name].get_data()))
         self.training[name].add_data(value)
-        logging.debug("after: {}".format(self.training[name].get_data()))
+        logging.debug("after train: {}".format(self.training[name].get_data()))
 
     def add_testing_data(self, name, value):
         self.testing[name].add_data(value)
@@ -134,9 +142,11 @@ class AIModule:
         sequence = self.testing[name].get_data()
         prediction = self.results[name].get_data()
         index = self.get_model_power_index(name)
-        
-        logging.debug("sequence> len: {}, sequence: {}".format(len(sequence), sequence))
-        logging.debug("prediction> len: {}, prediction: {}".format(len(prediction), prediction))
+
+        logging.debug("sequence> len: {}, sequence: {}".format(
+            len(sequence), sequence))
+        logging.debug("prediction> len: {}, prediction: {}".format(
+            len(prediction), prediction))
 
         num = 0     # number of instances
         sidx = 0    # start index
@@ -159,7 +169,7 @@ class AIModule:
         self.training[name]
         self.dimensions[name]
         return self.models[name].learning(self.training[name], self.dimensions[name])
-        
+
     def prediction(self, name, value):
         pred = self.models[name].prediction(value, self.dimensions[name])
         index = self.indexes[name]
@@ -170,12 +180,15 @@ class AIModule:
 # URI: /
 # HTTP behavior: GET
 # GET: Get the available AI algorithms and available generated AI models
+
+
 class Main(Resource):
     def get(self):
         model_list = {}
         model_list["algorithms"] = {}
 
-        algorithms = [f.split(".py")[0] for f in os.listdir("algorithms") if ".py" in f and f != "algorithm.py"]
+        algorithms = [f.split(".py")[0] for f in os.listdir(
+            "algorithms") if ".py" in f and f != "algorithm.py"]
         model_list["algorithms"]["note"] = "available AI algorithms"
         model_list["algorithms"]["value"] = algorithms
 
@@ -189,6 +202,8 @@ class Main(Resource):
 # HTTP behavior: GET, POST
 # GET: Get the information (algorithm, dimension) about the model
 # POST: Make the model with the parameters (name, algorithm, dimension)
+
+
 class ModelGenerator(Resource):
     def __init__(self):
         super(ModelGenerator, self).__init__()
@@ -216,7 +231,8 @@ class ModelGenerator(Resource):
         else:
             if "index" not in args:
                 ret["opcode"] = "failure"
-                ret["reason"] = "the index for the power value should be included if you do not use the default dimension (1)"
+                ret[
+                    "reason"] = "the index for the power value should be included if you do not use the default dimension (1)"
                 return make_response(jsonify(ret))
             else:
                 index = args["index"]
@@ -236,6 +252,8 @@ class ModelGenerator(Resource):
 # GET: Get the information about the training data
 # POST: Train the model with the training dataset
 # PUT: Add the training data
+
+
 class Trainer(Resource):
     def __init__(self):
         super(Trainer, self).__init__()
@@ -267,7 +285,8 @@ class Trainer(Resource):
 
                 if len(value) != ai.get_model_dimension(model_id):
                     ret["opcode"] = "failure"
-                    ret["reason"] = "not enough features. the dimension of the instance should be {} (the dimension of {} is given).".format(ai.get_model_dimension(model_id), len(value))
+                    ret["reason"] = "not enough features. the dimension of the instance should be {} (the dimension of {} is given).".format(
+                        ai.get_model_dimension(model_id), len(value))
                 else:
                     ret["opcode"] = "success"
                     ai.add_training_data(model_id, value)
@@ -276,11 +295,13 @@ class Trainer(Resource):
             ret["reason"] = "the model {} is unavailable".format(model_id)
         logging.debug("ret: {}".format(ret))
         return make_response(jsonify(ret))
-        
+
 # URI: /<string: model_id>/testing
 # HTTP behavior: GET, PUT
 # GET: Get the test results until now
 # PUT: Add the test data and gets the expected next result
+
+
 class Tester(Resource):
     def __init__(self):
         super(Tester, self).__init__()
@@ -302,8 +323,10 @@ class Tester(Resource):
 
                 if len(value) != ai.get_model_dimension(model_id):
                     ret["opcode"] = "failure"
-                    ret["reason"] = "not enough features. the dimension of the instance should be {} (the dimension of {} is given).".format(ai.get_model_dimension(model_id, len(value)))
+                    ret["reason"] = "not enough features. the dimension of the instance should be {} (the dimension of {} is given).".format(
+                        ai.get_model_dimension(model_id, len(value)))
                 else:
+                    logging.debug("hoho")
                     ai.add_testing_data(model_id, value)
                     result = ai.prediction(model_id, value)
                     logging.debug("result: {}".format(result))
@@ -316,6 +339,8 @@ class Tester(Resource):
 
 # URI: /<string: model_id>/result
 # HTTP behavior: GET
+
+
 class Evaluator(Resource):
     def __init__(self):
         super(Evaluator, self).__init__()
@@ -323,7 +348,8 @@ class Evaluator(Resource):
     def get(self, model_id):
         ret = {}
         if ai.has_model(model_id):
-            num, seq, pred, index, threshold, correct, incorrect, accuracy = ai.get_result(model_id)
+            num, seq, pred, index, threshold, correct, incorrect, accuracy = ai.get_result(
+                model_id)
             ret["opcode"] = "success"
             ret["num"] = num
             ret["sequence"] = seq
@@ -338,13 +364,18 @@ class Evaluator(Resource):
             ret["reason"] = "the model {} is unavailable".format(model_id)
         return make_response(jsonify(ret))
 
+
 def command_line_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-a", "--addr", metavar="<IP address>", help="IP address", type=str, default="0.0.0.0")
-    parser.add_argument("-p", "--port", required=True, metavar="<port number>", help="Port number", type=int)
-    parser.add_argument("-l", "--log", metavar="<log level (DEBUG/INFO/WARNING/ERROR/CRITICAL)>", help="Log level (DEBUG/INFO/WARNING/ERROR/CRITICAL)", type=str, default="INFO")
+    parser.add_argument("-a", "--addr", metavar="<IP address>",
+                        help="IP address", type=str, default="0.0.0.0")
+    parser.add_argument("-p", "--port", required=True,
+                        metavar="<port number>", help="Port number", type=int)
+    parser.add_argument("-l", "--log", metavar="<log level (DEBUG/INFO/WARNING/ERROR/CRITICAL)>",
+                        help="Log level (DEBUG/INFO/WARNING/ERROR/CRITICAL)", type=str, default="DEBUG")
     args = parser.parse_args()
     return args
+
 
 def main():
     args = command_line_args()
@@ -362,6 +393,7 @@ def main():
     api.add_resource(Evaluator, '/<string:model_id>/result')
 
     app.run(host=args.addr, port=args.port)
+
 
 # The process when the application is starting
 if __name__ == "__main__":
