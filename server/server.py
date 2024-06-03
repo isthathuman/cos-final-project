@@ -125,21 +125,13 @@ class Server:
 
         if is_training:
             if ts in self.train_ts and mode == 1:  # train 데이터의 timestamp 중복 체크
-                logging.info(
-                    "Duplicate timestamp found in training data. Requesting data again.")
-                opcode = OPCODE_AGAIN
-                client.send(int.to_bytes(opcode, 1, "big"))
                 return False
             else:
                 self.train_ts.add(ts)
                 self.send_instance(instance, is_training)
                 return True
         else:
-            if ts in self.test_ts and mode == 1:   # test 데이터의 timestamp 중복 체크
-                logging.info(
-                    "Duplicate timestamp found in testing data. Requesting data again.")
-                opcode = OPCODE_AGAIN
-                client.send(int.to_bytes(opcode, 1, "big"))
+            if ts in self.test_ts and mode == 1:
                 return False
             else:
                 self.test_ts.add(ts)
@@ -220,7 +212,7 @@ class Server:
                 # rbuf = client.recv(4096)  # 데이터 크기에 맞게 조정
                 # logging.debug("[*] received buf: {}".format(rbuf))
                 # k = self.parse_data(rbuf, True, mode, client)
-                opcode = OPCODE_DONE
+                opcode = OPCODE_WAIT
                 client.send(int.to_bytes(opcode, 1, "big"))
                 break
                 ntrain = 0

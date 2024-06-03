@@ -175,10 +175,10 @@ uint8_t NetworkManager::receiveCommand()
   sock = this->sock;
   opcode = OPCODE_WAIT;
 
-  while (opcode == OPCODE_WAIT || opcode == OPCODE_AGAIN)
+  while (opcode == OPCODE_WAIT)
     read(sock, &opcode, 1);
 
-  assert(opcode == OPCODE_DONE || opcode == OPCODE_QUIT);
+  assert(opcode == OPCODE_DONE || opcode == OPCODE_QUIT || opcode == OPCODE_AGAIN);
 
   return opcode;
 }

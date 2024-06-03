@@ -60,10 +60,14 @@ void Edge::run()
       before_end = this->endtime;
       ds = this->dr->getDataSet(curr);
       data = this->pm->processData(ds, &dlen);
+      cout << data << endl;
       this->endtime = this->nm->sendData(data, dlen, 15, this->mode, this->endtime, curr);
+
+      cout << "haha";
       opcode = this->nm->receiveCommand();
       cout << cnt++ << endl;
-      cout << before_end << " " << this->endtime << endl;
+      cout << before_end << " " << this->endtime << " " << curr << endl
+           << endl;
       curr += 86400;
       if (before_end != 0 && this->endtime == 0)
       {
@@ -81,7 +85,7 @@ void Edge::run()
       this->endtime = this->nm->sendData(data, dlen, 15, this->mode, this->endtime, curr);
       opcode = this->nm->receiveCommand();
       cout << cnt++ << endl;
-      cout << before_end << " " << this->endtime << endl
+      cout << before_end << " " << this->endtime << " " << curr << endl
            << endl;
 
       curr += 86400;
