@@ -109,56 +109,19 @@ class Server:
             logging.error("unknown response")
             sys.exit(1)
 
-    # def parse_data(self, data, is_training, mode, client):
-    #     json_data = json.loads(data.decode())
-    #     min_temp = json_data["min_temp"]
-    #     min_humid = json_data["min_humid"]
-    #     max_temp = json_data["max_temp"]
-    #     max_humid = json_data["max_humid"]
-    #     power = json_data["power"]
-    #     ts = json_data["timestamp"] - 1609459200
-    #     month = json_data["month"]
-
-    #     instance = [min_temp, min_humid, max_temp, max_humid, power, month]
-    #     logging.info(
-    #         "[min_temp, min_humid, max_temp, max_humid, power, month] = {}".format(instance))
-
-    #     if is_training:
-    #         if ts in self.train_ts and mode == 1:  # train 데이터의 timestamp 중복 체크
-    #             logging.info(
-    #                 "Duplicate timestamp found in training data. Requesting data again.")
-    #             opcode = OPCODE_AGAIN
-    #             client.send(int.to_bytes(opcode, 1, "big"))
-    #             return False
-    #         else:
-    #             self.train_ts.add(ts)
-    #             self.send_instance(instance, is_training)
-    #             return True
-    #     else:
-    #         if ts in self.test_ts and mode == 1:   # test 데이터의 timestamp 중복 체크
-    #             logging.info(
-    #                 "Duplicate timestamp found in testing data. Requesting data again.")
-    #             opcode = OPCODE_AGAIN
-    #             client.send(int.to_bytes(opcode, 1, "big"))
-    #             return False
-    #         else:
-    #             self.test_ts.add(ts)
-    #             self.send_instance(instance, is_training)
-    #             logging.info("")
-    #             return True
-# ------------------------------------------------------------------------------------------------------------------------
-
     def parse_data(self, data, is_training, mode, client):
         json_data = json.loads(data.decode())
-        average_temp = json_data["average_temp"]
-        average_humid = json_data["average_humid"]
+        min_temp = json_data["min_temp"]
+        min_humid = json_data["min_humid"]
+        max_temp = json_data["max_temp"]
+        max_humid = json_data["max_humid"]
         power = json_data["power"]
-        month = json_data["month"]
         ts = json_data["timestamp"] - 1609459200
+        month = json_data["month"]
 
-        instance = [average_temp, average_humid, power, month]
+        instance = [min_temp, min_humid, max_temp, max_humid, power, month]
         logging.info(
-            "[average_temp, average_humid, power, month] = {}".format(instance))
+            "[min_temp, min_humid, max_temp, max_humid, power, month] = {}".format(instance))
 
         if is_training:
             if ts in self.train_ts and mode == 1:  # train 데이터의 timestamp 중복 체크
@@ -183,6 +146,43 @@ class Server:
                 self.send_instance(instance, is_training)
                 logging.info("")
                 return True
+# ------------------------------------------------------------------------------------------------------------------------
+
+    # def parse_data(self, data, is_training, mode, client):
+    #     json_data = json.loads(data.decode())
+    #     average_temp = json_data["average_temp"]
+    #     average_humid = json_data["average_humid"]
+    #     power = json_data["power"]
+    #     month = json_data["month"]
+    #     ts = json_data["timestamp"] - 1609459200
+
+    #     instance = [average_temp, average_humid, power, month]
+    #     logging.info(
+    #         "[average_temp, average_humid, power, month] = {}".format(instance))
+
+    #     if is_training:
+    #         if ts in self.train_ts and mode == 1:  # train 데이터의 timestamp 중복 체크
+    #             logging.info(
+    #                 "Duplicate timestamp found in training data. Requesting data again.")
+    #             opcode = OPCODE_AGAIN
+    #             client.send(int.to_bytes(opcode, 1, "big"))
+    #             return False
+    #         else:
+    #             self.train_ts.add(ts)
+    #             self.send_instance(instance, is_training)
+    #             return True
+    #     else:
+    #         if ts in self.test_ts and mode == 1:   # test 데이터의 timestamp 중복 체크
+    #             logging.info(
+    #                 "Duplicate timestamp found in testing data. Requesting data again.")
+    #             opcode = OPCODE_AGAIN
+    #             client.send(int.to_bytes(opcode, 1, "big"))
+    #             return False
+    #         else:
+    #             self.test_ts.add(ts)
+    #             self.send_instance(instance, is_training)
+    #             logging.info("")
+    #             return True
 
     # TODO: You should implement your own protocol in this function
     # The following implementation is just a simple example
