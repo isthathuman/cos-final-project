@@ -37,7 +37,7 @@ void Edge::init()
 
 void Edge::run()
 {
-  time_t curr;
+  time_t curr, before_end;
   uint8_t opcode;
   uint8_t *data;
   DataSet *ds;
@@ -49,6 +49,7 @@ void Edge::run()
   {
     cout << "when to start" << this->timestart << endl;
     cout << "when to end" << this->endtime << endl;
+    cout << "mode: " << this->mode << endl;
     curr = this->timestart;
   }
   int cnt = 0;
@@ -56,29 +57,38 @@ void Edge::run()
   {
     while (opcode != OPCODE_QUIT)
     {
+      before_end = this->endtime;
       ds = this->dr->getDataSet(curr);
       data = this->pm->processData(ds, &dlen);
-      endtime = this->nm->sendData(data, dlen, 15, this->mode, this->endtime, curr);
+      this->endtime = this->nm->sendData(data, dlen, 15, this->mode, this->endtime, curr);
       opcode = this->nm->receiveCommand();
-      cout << opcode << endl;
       cout << cnt++ << endl;
-      cout << endtime << endl;
-
+      cout << before_end << " " << this->endtime << endl;
       curr += 86400;
+      if (before_end != 0 && this->endtime == 0)
+      {
+        curr -= 86400;
+      }
     }
   }
   else if (this->mode == 2)
   {
     while (opcode != OPCODE_QUIT)
     {
+      before_end = this->endtime;
       ds = this->dr->getDataSet(curr);
       data = this->pm->processData(ds, &dlen);
-      endtime = this->nm->sendData(data, dlen, 15, this->mode, this->endtime, curr);
+      this->endtime = this->nm->sendData(data, dlen, 15, this->mode, this->endtime, curr);
       opcode = this->nm->receiveCommand();
-      cout << opcode << endl;
       cout << cnt++ << endl;
+      cout << before_end << " " << this->endtime << endl
+           << endl;
 
       curr += 86400;
+      if (before_end != 0 && this->endtime == 0)
+      {
+        curr -= 86400;
+      }
     }
   }
   else if (this->mode == 3)

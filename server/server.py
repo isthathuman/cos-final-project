@@ -220,6 +220,8 @@ class Server:
                 # rbuf = client.recv(4096)  # 데이터 크기에 맞게 조정
                 # logging.debug("[*] received buf: {}".format(rbuf))
                 # k = self.parse_data(rbuf, True, mode, client)
+                opcode = OPCODE_DONE
+                client.send(int.to_bytes(opcode, 1, "big"))
                 break
                 ntrain = 0
             else:
@@ -268,14 +270,13 @@ class Server:
             logging.debug("[*] mode: {}".format(mode))
             if mode == 3:
                 break
-
-            if opcode == OPCODE_DATA or opcode == OPCODE_CHANGE:
+            if opcode == OPCODE_DATA:
                 # trash = client.recv(1)
                 logging.info("[*] data report from the edge")
                 rbuf = client.recv(4096)  # 데이터 크기에 맞게 조정
                 logging.debug("[*] received buf: {}".format(rbuf))
                 k = self.parse_data(rbuf, False, mode, client)
-            else:
+            elif opcode != OPCODE_CHANGE:
                 logging.error("[*] invalid opcode")
                 logging.error("[*] please try again")
                 sys.exit(1)

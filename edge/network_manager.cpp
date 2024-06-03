@@ -81,6 +81,7 @@ int NetworkManager::sendData(uint8_t *data, int dlen, int byteOfData, int mode, 
   unsigned char opcode;
 
   sock = this->sock;
+  cout << endtime << endl;
   if (mode == 3)
   {
     opcode = OPCODE_DATA;
