@@ -44,3 +44,28 @@ std::string BaseData::getUnit()
 {
     return this->unit;
 }
+
+void BaseData::setMin(double min)
+{
+    this->min = min;
+}
+
+double BaseData::getMin()
+{
+    return this->min;
+}
+
+void BaseData::setMax(double max)
+{
+    this->max = max;
+}
+
+double BaseData::getMax()
+{
+    return this->max;
+}
+
+double BaseData::getAvg()
+{
+    return this->avg;
+}

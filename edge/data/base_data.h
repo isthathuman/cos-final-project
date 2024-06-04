@@ -11,6 +11,8 @@ protected:
     double avg;
     std::string unit;
     BaseData *next;
+    double min;
+    double max;
 
 public:
     BaseData(time_t timestamp, double avg, std::string unit);
@@ -24,6 +26,15 @@ public:
     time_t getTimestamp();
 
     std::string getUnit();
+    void setMin(double min);
+
+    double getMin();
+
+    void setMax(double max);
+
+    double getMax();
+
+    double getAvg();
     // virtual double getValue() = 0;
 };
 

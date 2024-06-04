@@ -5,29 +5,5 @@ TemperatureData::TemperatureData(time_t timestamp, double min, double max, doubl
 {
   this->min = min;
   this->max = max;
-}
-
-void TemperatureData::setMin(double min)
-{
-  this->min = min;
-}
-
-double TemperatureData::getMin()
-{
-  return this->min;
-}
-
-void TemperatureData::setMax(double max)
-{
-  this->max = max;
-}
-
-double TemperatureData::getMax()
-{
-  return this->max;
-}
-
-double TemperatureData::getAvg()
-{
-  return this->avg;
+  this->avg = avg;
 }
